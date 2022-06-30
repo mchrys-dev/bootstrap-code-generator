@@ -1,13 +1,24 @@
 <!doctype html>
-<html lang="en">
+<!-- Full height html -->
+<html lang="fr" class="h-100">
 <head>
   <meta charset="utf-8">
-  <title>BsCodeGen</title>
+  <title>Générateur de code Bootstrap</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Ajout d'un thème Bootswatch -->
+  <link rel="stylesheet" href="https://bootswatch.com/5/cosmo/bootstrap.min.css" id="bootswatch-theme">
+  
+  <script src="https://kit.fontawesome.com/36b85dc698.js" crossorigin="anonymous"></script>
 </head>
-<body>
-  <app-root></app-root>
+<!-- Full height body -->
+<body class="h-100">
+  <!-- Full height app container, and also use flexbox columns -->
+  <app-root class="d-flex flex-column h-100"></app-root>
+
+  <!-- Javascript de Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
+
