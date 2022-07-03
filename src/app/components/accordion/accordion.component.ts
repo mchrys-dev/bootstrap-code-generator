@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class AccordionComponent implements OnInit {
 
   public accordion = {
-    id: 'test-accordion',
+    id: 'accordion-example',
     items: [
       {
         id: 0,
@@ -42,6 +42,7 @@ export class AccordionComponent implements OnInit {
   private code: string = '';
   public codeAlertVisible: boolean = false;
   private itemIdToDelete: number = 0;
+  public itemAlwaysOpen: boolean = false;
 
   constructor() { 
     this.accordion.items = [];
@@ -69,8 +70,15 @@ export class AccordionComponent implements OnInit {
 
   public getCode(): string {
     let itemsCode: string = '';
+    let itemsOpeningTag: string = '';
 
     this.accordion.items.forEach((item) => {
+      if(this.itemAlwaysOpen) {
+        itemsOpeningTag = `<div id="${item.bodyId}" class="accordion-collapse collapse ${item.show ? 'show' : ''}" attr.aria-labelledby="${item.headerId}">`;
+      } else {
+        itemsOpeningTag = `<div id="${item.bodyId}" class="accordion-collapse collapse ${item.show ? 'show' : ''}" attr.aria-labelledby="${item.headerId}"> data-bs-parent="#${this.accordion.id}">`;
+      }
+
       itemsCode += 
       `
         <div class="accordion-item">
@@ -79,7 +87,7 @@ export class AccordionComponent implements OnInit {
               ${item.headerText}
             </button>
           </h2>
-          <div id="${item.bodyId}" class="accordion-collapse collapse ${item.show ? 'show' : ''}" attr.aria-labelledby="${item.headerId}" data-bs-parent="#${this.accordion.id}">
+          ${itemsOpeningTag}
             <div class="accordion-body">
               ${item.bodyText}   
             </div>

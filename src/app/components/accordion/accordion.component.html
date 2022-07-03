@@ -21,6 +21,13 @@
               <label for="id-input" class="form-label">id de l'accordion</label>
               <input type="text" class="form-control" id="id-input" name="idInput" [(ngModel)]="accordion.id">
             </div>
+
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" value="" id="open-checkbox" name="itemAlwaysOpenCheck" [(ngModel)]="itemAlwaysOpen">
+              <label class="form-check-label" for="open-checkbox">
+                Quand un élément de l'accordion s'ouvre, ne pas fermer les autres éléments 
+              </label>
+            </div>
         </form>
 
         <!-- Button trigger modal -->
@@ -133,7 +140,7 @@
                   {{ item.headerText }}
                 </button>
               </h2>
-              <div id="{{ item.bodyId }}" class="accordion-collapse collapse {{ item.show ? 'show' : '' }}" [attr.aria-labelledby]="item.headerId" [attr.data-bs-parent]="'#' + accordion.id">
+              <div id="{{ item.bodyId }}" class="accordion-collapse collapse {{ item.show ? 'show' : '' }}" [attr.aria-labelledby]="item.headerId" [attr.data-bs-parent]="itemAlwaysOpen ? null : '#' + accordion.id">
                 <div class="accordion-body">
                   {{ item.bodyText }}    
                 </div>
