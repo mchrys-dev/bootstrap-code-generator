@@ -74,9 +74,9 @@ export class AccordionComponent implements OnInit {
 
     this.accordion.items.forEach((item) => {
       if(this.itemAlwaysOpen) {
-        itemsOpeningTag = `<div id="${item.bodyId}" class="accordion-collapse collapse ${item.show ? 'show' : ''}" attr.aria-labelledby="${item.headerId}">`;
+        itemsOpeningTag = `<div id="${item.bodyId}" class="accordion-collapse collapse ${item.show ? 'show' : ''}" aria-labelledby="${item.headerId}">`;
       } else {
-        itemsOpeningTag = `<div id="${item.bodyId}" class="accordion-collapse collapse ${item.show ? 'show' : ''}" attr.aria-labelledby="${item.headerId}"> data-bs-parent="#${this.accordion.id}">`;
+        itemsOpeningTag = `<div id="${item.bodyId}" class="accordion-collapse collapse ${item.show ? 'show' : ''}" aria-labelledby="${item.headerId}"> data-bs-parent="#${this.accordion.id}">`;
       }
 
       itemsCode += 
@@ -109,7 +109,7 @@ export class AccordionComponent implements OnInit {
     ${accordionCloseTag}
     `;
 
-    return this.code;
+    return this.accordion.items.length > 0 ? this.code : '';
   }
 
   public openItem(id: number): void {
