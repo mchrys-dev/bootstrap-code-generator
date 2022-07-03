@@ -37,7 +37,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <form (ngSubmit)="addElement()">
+                <form (ngSubmit)="newItem ? addElement() : editItem()">
                   <div class="mb-3">
                     <label for="header-id-input" class="form-label">id du header</label>
                     <input type="text" class="form-control" id="header-id-input" name="headerIdInput" [(ngModel)]="item.headerId" >
@@ -58,11 +58,37 @@
                     <input type="checkbox" class="form-check-input" id="show-check" name="showCheck" [(ngModel)]="item.show" >
                     <label class="form-check-label" for="show-check">Elément ouvert par défaut</label>
                   </div>
-                  <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Valider</button>
+                  <button 
+                    type="submit" 
+                    class="btn btn-primary" 
+                    data-bs-dismiss="modal"
+                    [disabled]="!item.headerId || !item.headerText || !item.bodyId || !item.bodyText"
+                  >
+                    Valider
+                  </button>
                 </form>
               </div>
               <div class="modal-footer">
                  
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal de suppression d'un élément -->
+        <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="delete-modal-label" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="delete-modal-label">Suppression d'un élément</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Êtes-vous sûr(e) de vouloir supprimer cet élément?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteItem()">Oui</button>
               </div>
             </div>
           </div>
@@ -83,10 +109,10 @@
               <tr *ngFor="let item of accordion.items" class="align-middle">
                 <td>{{ item.bodyText }}</td>
                 <td>
-                  <button class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="editItem(item.id)">
+                  <button class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="openItem(item.id)">
                     <i class="fa-solid fa-pen-to-square"></i>
                   </button>
-                  <button class="btn btn-danger m-2">
+                  <button class="btn btn-danger m-2" data-bs-toggle="modal" data-bs-target="#delete-modal" (click)="setIdItemToDelete(item.id)">
                     <i class="fa-solid fa-trash"></i>
                   </button>
                 </td>
@@ -94,8 +120,6 @@
             </tbody>
           </table>
         </ng-template>
-
-        {{ accordion.items | json}}
     </div>
 
     <div class="tab-pane" id="result" role="tabpanel" aria-labelledby="result-tab">
@@ -119,12 +143,16 @@
     </div>
 
     <div class="tab-pane" id="code" role="tabpanel" aria-labelledby="code-tab">
-      <div class="mb-3">
-        <div class="bg-secondary text-white">
-          <pre>
-            {{ getCode() }}
-          </pre>
-        </div>
+      <p id="code-alert" class="alert alert-primary" role="alert" *ngIf="codeAlertVisible">
+        Le code a bien été copié!
+      </p>
+
+      <button class="btn btn-primary mb-3" (click)="copyCode()">Copier le code</button>
+      <div class="bg-secondary text-white">
+        <pre>
+          {{ getCode() }}
+        </pre>
       </div>
     </div>
 </div>
+

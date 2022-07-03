@@ -39,6 +39,9 @@ export class AccordionComponent implements OnInit {
   }
 
   public newItem: boolean = false;
+  private code: string = '';
+  public codeAlertVisible: boolean = false;
+  private itemIdToDelete: number = 0;
 
   constructor() { 
     this.accordion.items = [];
@@ -85,18 +88,55 @@ export class AccordionComponent implements OnInit {
       `;
     });
 
-    return(
-      `
-      <div class="accordion" id="${this.accordion.id}">
-        ${itemsCode}
-      </div>
-      `
-    );
+    let accordionOpenTag: string;
+    let accordionCloseTag: string;
+
+    this.accordion.items.length === 0 ? accordionOpenTag = '' : accordionOpenTag = `<div class="accordion" id="${this.accordion.id}">`;
+    this.accordion.items.length === 0 ? accordionCloseTag = '' : accordionCloseTag = '</div>';
+
+    this.code =  
+    `
+    ${accordionOpenTag}
+      ${itemsCode}
+    ${accordionCloseTag}
+    `;
+
+    return this.code;
   }
 
-  public editItem(id: number): void {
+  public openItem(id: number): void {
     this.newItem = false;
     this.item = this.accordion.items.find(item => item.id === id)!;
   }
 
+  public editItem(): void {
+    let newItems: any = [];
+
+    newItems.push(this.item);
+    
+    this.accordion.items = this.accordion.items.map(item => newItems.find((newItem: any) => newItem.id === item.id) || item);
+  }
+
+  public setIdItemToDelete(id: number) {
+    this.itemIdToDelete = id;
+  }
+
+  public deleteItem(): void {
+    this.accordion.items = this.accordion.items.filter(item => item.id !== this.itemIdToDelete);
+  }
+
+  public copyCode(): void {
+    navigator.clipboard.writeText(this.getCode());
+    this.codeAlertVisible = true;
+    setTimeout(() => {
+      this.codeAlertVisible = false; 
+    }, 2000);
+  }
+
 }
+
+
+ 
+
+
+ 
