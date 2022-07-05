@@ -76,4 +76,12 @@ export class TabsComponent implements OnInit {
 
   }
 
+  public setOtherTabsState(): void {
+    if(this.tab.active) {
+      this.tabList.tabs.forEach((tab) => {
+        tab.active = false;
+      });
+    }
+  }
+
 }
