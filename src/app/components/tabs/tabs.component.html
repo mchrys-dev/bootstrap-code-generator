@@ -1,0 +1,127 @@
+<h1>Tabs</h1>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="editor-tab" data-bs-toggle="tab" data-bs-target="#editor" type="button" role="tab" aria-controls="editor" aria-selected="true">Éditeur</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="result-tab" data-bs-toggle="tab" data-bs-target="#result" type="button" role="tab" aria-controls="result" aria-selected="false">Résultat</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="code-tab" data-bs-toggle="tab" data-bs-target="#code" type="button" role="tab" aria-controls="code" aria-selected="false">Code</button>
+    </li>
+</ul>
+  
+<!-- Tab panes -->
+<div class="tab-content p-3">
+    <div class="tab-pane active" id="editor" role="tabpanel" aria-labelledby="editor-tab">
+        <form>
+            <div class="mb-3">
+                <label for="tablist-id-input" class="form-label">id de la liste d'onglets</label>
+                <input type="text" class="form-control" id="tablist-id-input" name="tablistIdInput" [(ngModel)]="tabList.listId" >
+            </div>
+        </form>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tabModal" (click)="initTab()">
+            Ajouter un onglet
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="tabModal" tabindex="-1" aria-labelledby="tabModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="tabModalLabel">Ajouter un onglet</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form (ngSubmit)="addTab()">
+                        <div class="mb-3">
+                            <label for="tab-id-input" class="form-label">id de l'onglet</label>
+                            <input type="text" class="form-control" id="tab-id-input" name="tabIdInput" [(ngModel)]="tab.tabId" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="div-id-input" class="form-label">id de la div qui sera affichée quand on click sur cet onglet</label>
+                            <input type="text" class="form-control" id="div-id-input" name="divIdInput" [(ngModel)]="tab.divId" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="tab-text-input" class="form-label">Texte de l'onglet</label>
+                            <input type="text" class="form-control" id="tab-text-input" name="tabTextInput" [(ngModel)]="tab.tabText" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="div-text-input" class="form-label">Texte de la div qui sera affichée quand on clicke sur cet onglet</label>
+                            <input type="text" class="form-control" id="div-text-input" name="divTextInput" [(ngModel)]="tab.divText" >
+                        </div>
+                        <div class="mb-3 form-check" *ngIf="!activeTabExists()">
+                            <input type="checkbox" class="form-check-input" id="active-check" name="showCheck" [(ngModel)]="tab.active" >
+                            <label class="form-check-label" for="active-check">Onglet sélectionné par défaut</label>
+                        </div>
+                        <button 
+                            type="submit" 
+                            class="btn btn-primary" 
+                            data-bs-dismiss="modal"
+                            [disabled]="!tab.tabId || !tab.divId || !tab.tabText || !tab.divText"
+                        >
+                            Valider
+                        </button>
+                    </form>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <p>{{ tabList | json }}</p>
+        <p>{{ activeTabExists() }}</p>
+
+        <p *ngIf="tabList.tabs.length === 0 ; else tabs_container">Aucun onglet n'a été ajouté.</p>
+        <ng-template #tabs_container>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Onglet</th>
+                    <th>Actions</th> 
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let tab of tabList.tabs" class="align-middle">
+                    <td>{{ tab.tabId }}</td>
+                    <td>
+                      <button class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#tabModal" (click)="openTab(tab.id)">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      </button>
+                      <button class="btn btn-danger m-2" data-bs-toggle="modal" data-bs-target="#delete-modal" (click)="setIdTabToDelete(tab.id)">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+        </ng-template>
+    </div>
+
+    <div class="tab-pane" id="result" role="tabpanel" aria-labelledby="result-tab">
+        
+        <div>
+            <ul class="nav nav-tabs" [id]="tabList.listId" role="tablist">
+                <li class="nav-item" role="presentation" *ngFor="let tab of tabList.tabs">
+                    <button class="nav-link" [class.active]="tab.active" [id]="tab.tabId" data-bs-toggle="tab" [attr.data-bs-target]="'#' + tab.divId" type="button" role="tab" [attr.aria-controls]="tab.divId" [attr.aria-selected]="tab.active">
+                        {{ tab.tabText }}
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content">
+                <div *ngFor="let tab of tabList.tabs" class="tab-pane" [class.active]="tab.active" [class.show]="tab.active" [id]="tab.divId" role="tabpanel" [attr.aria-labelledby]="tab.tabId">
+                    {{ tab.divText }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="tab-pane" id="code" role="tabpanel" aria-labelledby="code-tab">
+        Code
+    </div>
+</div>
