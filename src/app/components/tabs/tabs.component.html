@@ -3,19 +3,19 @@
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="editor-tab" data-bs-toggle="tab" data-bs-target="#editor" type="button" role="tab" aria-controls="editor" aria-selected="true">Éditeur</button>
+      <button class="nav-link active" id="editor-tab1657106047635" data-bs-toggle="tab" data-bs-target="#editor1657106047635" type="button" role="tab" aria-controls="editor" aria-selected="true">Éditeur</button>
     </li>
     <li class="nav-item" role="presentation">
-      <button class="nav-link" id="result-tab" data-bs-toggle="tab" data-bs-target="#result" type="button" role="tab" aria-controls="result" aria-selected="false">Résultat</button>
+      <button class="nav-link" id="result-tab1657106090836" data-bs-toggle="tab" data-bs-target="#result1657106090836" type="button" role="tab" aria-controls="result" aria-selected="false">Résultat</button>
     </li>
     <li class="nav-item" role="presentation">
-      <button class="nav-link" id="code-tab" data-bs-toggle="tab" data-bs-target="#code" type="button" role="tab" aria-controls="code" aria-selected="false">Code</button>
+      <button class="nav-link" id="code-tab1657106117894" data-bs-toggle="tab" data-bs-target="#code1657106117894" type="button" role="tab" aria-controls="code" aria-selected="false">Code</button>
     </li>
 </ul>
   
 <!-- Tab panes -->
 <div class="tab-content p-3">
-    <div class="tab-pane active" id="editor" role="tabpanel" aria-labelledby="editor-tab">
+    <div class="tab-pane active" id="editor1657106047635" role="tabpanel" aria-labelledby="editor-tab1657106047635">
         <form>
             <div class="mb-3">
                 <label for="tablist-id-input" class="form-label">id de la liste d'onglets</label>
@@ -37,13 +37,13 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form (ngSubmit)="addTab()">
+                    <form (ngSubmit)="isNewTab ? addTab() : editTab()">
                         <div class="mb-3">
                             <label for="tab-id-input" class="form-label">id de l'onglet</label>
                             <input type="text" class="form-control" id="tab-id-input" name="tabIdInput" [(ngModel)]="tab.tabId" >
                         </div>
                         <div class="mb-3">
-                            <label for="div-id-input" class="form-label">id de la div qui sera affichée quand on click sur cet onglet</label>
+                            <label for="div-id-input" class="form-label">id de la div qui sera affichée quand on clique sur cet onglet</label>
                             <input type="text" class="form-control" id="div-id-input" name="divIdInput" [(ngModel)]="tab.divId" >
                         </div>
                         <div class="mb-3">
@@ -72,8 +72,24 @@
             </div>
         </div>
 
-        <p>{{ tabList | json }}</p>
-        <p>{{ activeTabExists() }}</p>
+        <!-- Modal de suppression d'un élément -->
+        <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="delete-modal-label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delete-modal-label">Suppression d'un onglet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr(e) de vouloir supprimer cet onglet?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteTab()">Oui</button>
+                </div>
+                </div>
+            </div>
+        </div>
 
         <p *ngIf="tabList.tabs.length === 0 ; else tabs_container">Aucun onglet n'a été ajouté.</p>
         <ng-template #tabs_container>
@@ -101,9 +117,8 @@
         </ng-template>
     </div>
 
-    <div class="tab-pane" id="result" role="tabpanel" aria-labelledby="result-tab">
-        
-        <div>
+    <div class="tab-pane" id="result1657106090836" role="tabpanel" aria-labelledby="result-tab1657106090836">
+        <div *ngIf="tabList.tabs.length > 0 ; else no_tabs_msg">
             <ul class="nav nav-tabs" [id]="tabList.listId" role="tablist">
                 <li class="nav-item" role="presentation" *ngFor="let tab of tabList.tabs">
                     <button class="nav-link" [class.active]="tab.active" [id]="tab.tabId" data-bs-toggle="tab" [attr.data-bs-target]="'#' + tab.divId" type="button" role="tab" [attr.aria-controls]="tab.divId" [attr.aria-selected]="tab.active">
@@ -118,10 +133,19 @@
                 </div>
             </div>
         </div>
-
+        <ng-template #no_tabs_msg>
+            <p>Ajoutez au moins un onglet pour voir le résultat.</p>
+        </ng-template>
     </div>
 
-    <div class="tab-pane" id="code" role="tabpanel" aria-labelledby="code-tab">
-        Code
+    <div class="tab-pane" id="code1657106117894" role="tabpanel" aria-labelledby="code-tab1657106117894">
+        <div class="bg-black text-white" *ngIf="tabList.tabs.length > 0 ; else no_code_msg">
+            <pre>
+              {{ getCode() }}
+            </pre>
+        </div>
+        <ng-template #no_code_msg>
+            <p>Ajoutez au moins un onglet pour voir le code.</p>
+        </ng-template>
     </div>
 </div>

@@ -130,7 +130,7 @@
     </div>
 
     <div class="tab-pane" id="result" role="tabpanel" aria-labelledby="result-tab">
-        <div class="accordion" id="{{ accordion.id }}" *ngIf="accordion.items.length > 0">
+        <div class="accordion" id="{{ accordion.id }}" *ngIf="accordion.items.length > 0 ; else no_items_msg">
             <div 
               class="accordion-item" 
               *ngFor="let item of accordion.items; let i = index"
@@ -147,19 +147,27 @@
               </div>
             </div>
         </div>
+        <ng-template #no_items_msg>
+          <p>Ajoutez au moins un élément pour voir le résultat.</p>
+        </ng-template>
     </div>
 
     <div class="tab-pane" id="code" role="tabpanel" aria-labelledby="code-tab">
-      <p id="code-alert" class="alert alert-primary" role="alert" *ngIf="codeAlertVisible">
-        Le code a bien été copié!
-      </p>
+      <div *ngIf="accordion.items.length > 0 ; else no_code_msg">
+        <p id="code-alert" class="alert alert-primary" role="alert" *ngIf="codeAlertVisible">
+          Le code a bien été copié!
+        </p>
 
-      <button class="btn btn-primary mb-3" (click)="copyCode()" [disabled]="!getCode()">Copier le code</button>
-      <div class="bg-black text-white">
-        <pre>
-          {{ getCode() }}
-        </pre>
+        <button class="btn btn-primary mb-3" (click)="copyCode()" [disabled]="!getCode()">Copier le code</button>
+        <div class="bg-black text-white">
+          <pre>
+            {{ getCode() }}
+          </pre>
+        </div>
       </div>
+      <ng-template #no_code_msg>
+        <p>Ajoutez au moins un élément pour voir le code.</p>
+      </ng-template>
     </div>
 </div>
 

@@ -33,6 +33,9 @@ export class TabsComponent implements OnInit {
        
   };
 
+  public isNewTab: boolean = false;
+  public idTabToDelete: number = 0;
+
   constructor() { }
 
   ngOnInit(): void {
@@ -40,6 +43,7 @@ export class TabsComponent implements OnInit {
   }
 
   public initTab(): void {
+    this.isNewTab = true;
     this.tab = {
       id: 0,
       tabId: '',
@@ -69,19 +73,71 @@ export class TabsComponent implements OnInit {
   }
 
   public openTab(id: number) {
+    this.isNewTab = false;
     this.tab = this.tabList.tabs.find(tab => tab.id === id)!;
   }
 
-  public setIdTabToDelete(id: number) {
+  public editTab(): void {
+    let newTabs: any[] = [];
+    newTabs.push(this.tab);
 
+    this.tabList.tabs = this.tabList.tabs.map(tab => newTabs.find((newTab: any) => newTab.id === tab.id) || tab);
+  }
+
+  public setIdTabToDelete(id: number): void {
+    this.idTabToDelete = id;
+  }
+
+  public deleteTab(): void {
+    this.tabList.tabs = this.tabList.tabs.filter(tab => tab.id !== this.idTabToDelete);
   }
 
   public setOtherTabsState(): void {
     if(this.tab.active) {
       this.tabList.tabs.forEach((tab) => {
-        tab.active = false;
+        if(tab.id !== this.tab.id) {
+          tab.active = false;
+        }
       });
     }
+  }
+
+  public getCode(): string {
+    let code: string = '';
+
+    code += 
+    `
+    <ul class="nav nav-tabs" id=${this.tab.tabId} role="tablist">
+    `;
+    this.tabList.tabs.forEach((tab) => {
+      code +=
+      `
+        <li class="nav-item" role="presentation">
+          <button class="nav-link ${tab.active ? 'active' : ''}" id="${this.tab.tabId}" data-bs-toggle="tab" data-bs-target="#${this.tab.divId}" type="button" role="tab" aria-controls="${this.tab.divId}" aria-selected="${this.tab.active}">
+            ${tab.tabText}
+          </button>
+        </li>
+      `;
+    });
+    code +=
+    `
+    </ul>
+    <div class="tab-content">
+    `;
+    this.tabList.tabs.forEach((tab) => {
+      code +=
+      `
+      <div class="tab-pane${tab.active ? ' active show' : ''}" id="${this.tab.divId}" role="tabpanel" aria-labelledby="${this.tab.tabId}">
+        ${tab.divText}
+      </div>
+      `;
+    });
+    code +=
+    `
+    </div>
+    `;
+
+    return this.tabList.tabs.length === 0 ? '' : code;
   }
 
 }
